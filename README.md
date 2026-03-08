@@ -183,9 +183,7 @@ Collects demographic information and baseline measures of close reading and LLM 
     { "title": "In your everyday life, how often do you read poems?", "answer": "Sometimes, about 3–4 times a month" },
     { "title": "In your everyday life, how much do you enjoy reading poetry?", "answer": "I enjoy it quite a bit" },
     { "title": "Have you ever taken any college-level humanities courses...?", "answer": "A lot (e.g., multiple courses or extensive coursework specifically focused on humanities)" },
-    { "title": "How much coursework have you completed that is related to poetry?", "answer": "A moderate amount (e.g., a full unit or a single course focused on poetry)" },
-    { "title": "Did you use the AI in the study interface to help you analyze and interpret any of the three poems?...", "answer": "..." },
-    { "title": "Was any part of the study confusing or challenging for you?...", "answer": "..." }
+    { "title": "How much coursework have you completed that is related to poetry?", "answer": "A moderate amount (e.g., a full unit or a single course focused on poetry)" }
   ],
   "time": 1751860260316
 }
@@ -207,8 +205,6 @@ Collects demographic information and baseline measures of close reading and LLM 
 | `everyday_poem_enjoyment` | In your everyday life, how much do you enjoy reading poetry? | String |
 | `humanities_course_experience` | Have you ever taken any college-level humanities courses (e.g., literature, philosophy, history)? | String |
 | `poetry_course_experience` | How much coursework have you completed that is related to poetry? | String |
-| `ai_use_reflection` | Did you use the AI in the study interface to help you analyze and interpret any of the three poems?... | String |
-| `study_feedback` | Was any part of the study confusing or challenging for you? Did you have any technical issues during the study? | String |
 | `page8_submission_time` | Timestamp (Unix ms) when Page 8 was submitted | Integer |
 
 
