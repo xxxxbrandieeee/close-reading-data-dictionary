@@ -2,27 +2,17 @@
 
 ## Overview
 
-This repository contains the data processing pipeline for the experiment in the paper *["What Does AI Do for Cultural Interpretation? A Randomized Experiment on Close Reading Poems with Exposure to AI Interpretation"](https://doi.org/10.1145/3772318.3791727)*. It is intended for researchers who have deployed the [study interface](https://github.com/[repo]) and want to understand what data the interface collects and how to process it into a structured dataset.
-
-The published dataset from our study is available in a [separate repository](https://github.com/[repo]).
-
-### Paper
-
-> **What Does AI Do for Cultural Interpretation? A Randomized Experiment on Close Reading Poems with Exposure to AI Interpretation**
->
-> Jiayin Zhi, Hoyt Long, Richard Jean So, and Mina Lee. CHI 2026.
->
-> https://doi.org/10.1145/3772318.3791727
+This repository contains the data processing pipeline for the experiment in the paper *["What Does AI Do for Cultural Interpretation? A Randomized Experiment on Close Reading Poems with Exposure to AI Interpretation"](https://doi.org/10.1145/3772318.3791727)*. It is intended for the use of the [study interface](https://github.com/[repo]) and want to understand what data the interface collects and how to process it into a structured dataset.
 
 ### Repository Structure
 
 ```
-├── README.md                     ← This file (data dictionary)
+├── README.md                     
 └── processing/
-    └── data_processing.ipynb    ← Notebook: raw JSON logs → CSV
+    └── data_processing.ipynb  
 ```
 
-### Privacy Note
+### Note
 
 The raw JSON interaction logs contain identifiable participant IDs (Prolific worker IDs) and are not included here. The data dictionary below documents the raw JSON structure to explain what the interface collects and how the processed columns are derived.
 
@@ -30,7 +20,7 @@ The raw JSON interaction logs contain identifiable participant IDs (Prolific wor
 
 ## Raw Log Structure
 
-The study interface produces one JSON object per participant. Each object has top-level keys corresponding to pages of the study interface, plus metadata fields. The three poems are fixed across participants and map to page suffixes as follows:
+The study interface produces one JSON object per participant. Each object has top-level keys corresponding to pages of the study interface, plus metadata fields. The three randomized poems are fixed across participants and map to page suffixes as follows:
 
 - `_1` → `love_poem`
 - `_2` → `dusting`
@@ -40,17 +30,16 @@ Pages 4–7 repeat for each poem (in randomized order), while all other pages ap
 
 ```
 {
-  "page1":    { ... },   // Consent
-  "page2":    { ... },   // Participant ID
+  "page1":    { ... },   // Online consent
+  "page2":    { ... },   // User ID
   "page3":    { ... },   // Instruction check
   "page8":    { ... },   // Demographics
   "page4_1":  { ... },   // First reading: love_poem
-  "page5_1":  { ... },   // Pre-task ratings: love_poem
-  "page6_1":  { ... },   // Interpretation task: love_poem
-  "page7_1":  { ... },   // Post-task ratings: love_poem
+  "page5_1":  { ... },   // Interpretation tasks: love_poem
+  "page6_1":  { ... },   // Post-task ratings: love_poem
   "page4_2":  { ... },   // First reading: dusting
   ...                    // (same structure for _2 and _3)
-  "pageNew8": { ... },   // Debrief and study feedback
+  "page7": { ... },   // Debrief and study feedback
   "isRefresh": true      // (optional) Browser refresh detected
 }
 ```
@@ -65,7 +54,7 @@ The processing notebook (`processing/data_processing.ipynb`) parses these JSON o
 
 #### Browser Refresh Detection
 
-A top-level field `isRefresh` indicates whether the participant refreshed the browser during the study. It is used to detect protocol violations or incomplete interaction logs, and only appears if a refresh event occurred.
+A top-level field `isRefresh` indicates whether the participant refreshed the browser during the study, which would restart the session. It is used as a data quality check — participants whose logs include this field would be excluded from analysis.
 
 | Column Name | Description | Type |
 |---|---|---|
@@ -73,7 +62,7 @@ A top-level field `isRefresh` indicates whether the participant refreshed the br
 
 #### Page Leave Tracking
 
-Each page may include a `leave_page` list logging when the participant navigated away from and returned to the tab.
+Each page may include a `leave_page` list logging when the participant left and returned to the tab.
 
 **Raw JSON example:**
 ```json
@@ -129,12 +118,12 @@ Records whether the participant agreed to the study's consent form and when they
 
 ### Page 2: Participant ID
 
-Captures the participant's identifier (Prolific ID) and submission timestamp.
+Captures the participant's identifier (worker ID) and submission timestamp.
 
 **Raw JSON example:**
 ```json
 "page2": {
-  "value": "6119f2f6a0b020eb3941b3e1",
+  "value": "<worker_id>",
   "time": 1751138331919
 }
 ```
@@ -146,13 +135,11 @@ Captures the participant's identifier (Prolific ID) and submission timestamp.
 | `participant_id` | Participant's unique ID | String |
 | `page2_submission_time` | Timestamp (Unix ms) when the ID page was submitted | Integer |
 
-> ⚠️ **Privacy Note:** `participant_id` contains Prolific worker IDs. This field has been de-identified in the published dataset.
-
 ---
 
 ### Page 3: Instruction Check
 
-Confirms that participants acknowledged the key study instructions.
+Confirms that participants acknowledged the study instructions.
 
 **Raw JSON example:**
 ```json
@@ -179,7 +166,7 @@ Confirms that participants acknowledged the key study instructions.
 
 ### Page 8: Demographics
 
-Collects demographic information and baseline measures of poetry and LLM experience. Appears before the poem loop in our study, but can be repositioned in the interface.
+Collects demographic information and baseline measures of close reading and LLM experience. 
 
 **Raw JSON example:**
 ```json
@@ -208,7 +195,6 @@ Collects demographic information and baseline measures of poetry and LLM experie
 
 | Column Name | Original Question | Type |
 |---|---|---|
-| `condition` | Inferred from question wording (see below) | String |
 | `llm_familiarity` | How familiar are you with LLMs and LLM-infused applications such as ChatGPT, Copilot, and Claude? | String |
 | `llm_use_frequency` | How often do you use LLMs and LLM-infused applications such as ChatGPT, Copilot, and Claude? | String |
 | `llm_attitude` | Overall, how do you feel about LLMs and LLM-infused applications such as ChatGPT, Copilot, and Claude? | String |
@@ -225,8 +211,6 @@ Collects demographic information and baseline measures of poetry and LLM experie
 | `study_feedback` | Was any part of the study confusing or challenging for you? Did you have any technical issues during the study? | String |
 | `page8_submission_time` | Timestamp (Unix ms) when Page 8 was submitted | Integer |
 
-**Processing logic:**
-- `condition`: If the `ai_use_reflection` question asks *"Did you use the AI..."*, condition is `AI`. If it asks *"Do you think AI could have helped you..."*, condition is `No AI`.
 
 #### Author–Participant Identity Match Variables
 
@@ -289,47 +273,10 @@ Captures participants' initial reading of each poem. Logs fine-grained cursor in
 **Processing logic:**
 - `[poem_name]_first_reading_line_hover`: Group `poemItemHover` events by `index`, count occurrences. Format as comma-separated string: single hovers as `index`, repeated hovers as `index(n)`. Sort by ascending line index.
 - Hover durations (`left_content_hover`, `right_content_hover`): Sum durations of paired `enter`/`leave` events; ignore unpaired events.
-- `poemScroll` is not currently extracted.
 
 ---
 
-### Pages 5_X: Pre-Task Ratings
-
-After reading each poem, participants rate their initial impressions on four scales before beginning the interpretation task.
-
-**Raw JSON example:**
-```json
-"page5_3": {
-  "info": [
-    { "title": "Based on your first impression, how difficult was this poem for you?",
-      "answer": "Neither easy nor difficult" },
-    { "title": "Based on your first impression, to what degree did this poem resonate with you?...",
-      "answer": "I had a slightly negative reaction to it" },
-    { "title": "Based on your first impression, how much did you enjoy reading the poem?",
-      "answer": "Neither enjoyable nor unenjoyable" },
-    { "title": "Based on your first impression, how confident are you in your ability to interpret the poem?",
-      "answer": "I feel neither able nor unable" }
-  ],
-  "time": 1753800072565
-}
-```
-
-**Processed columns (per poem):**
-
-| Column Name | Description | Scale | Type |
-|---|---|---|---|
-| `[poem_name]_first_reading_difficulty` | Perceived difficulty on first reading | 1–7 | Integer |
-| `[poem_name]_first_reading_appreciation` | Degree to which the poem resonated on first reading | 1–7 | Integer |
-| `[poem_name]_first_reading_enjoyment` | Enjoyment of the poem on first reading | 1–7 | Integer |
-| `[poem_name]_first_reading_self_efficacy` | Confidence in ability to interpret the poem on first reading | 1–7 | Integer |
-| `[poem_name]_first_reading_appreciation_rationale` | Open-ended rationale for appreciation rating | — | String |
-| `[poem_name]_first_reading_enjoyment_rationale` | Open-ended rationale for enjoyment rating | — | String |
-| `[poem_name]_first_reading_self_efficacy_rationale` | Open-ended rationale for self-efficacy rating | — | String |
-| `page5_X_submission_time` | Timestamp (Unix ms) when the page was submitted | — | Integer |
-
----
-
-### Pages 6_X: Interpretation Task
+### Pages 5_X: Interpretation Tasks
 
 The main task page. Participants write three stylistic examples and corresponding explanations in six textboxes. The system logs behavioral data including copy actions, input duration, hover patterns, AI tab viewing, and AI text selections.
 
@@ -346,7 +293,7 @@ The main task page. Participants write three stylistic examples and correspondin
 
 **Raw JSON example:**
 ```json
-"page6_3": {
+"page5_3": {
   "info": [
     { "title": "First example:",
       "value": "The phrase that stood out to me was \"So will my page be colored that I write?\"",
@@ -510,17 +457,17 @@ These fields are recorded directly in the raw logs (in seconds).
 
 | Column Name | Description | Type |
 |---|---|---|
-| `page6_X_submission_time` | Timestamp (Unix ms) when the page was submitted | Integer |
+| `page5_X_submission_time` | Timestamp (Unix ms) when the page was submitted | Integer |
 
 ---
 
-### Pages 7_X: Post-Task Ratings
+### Pages 6_X: Post-Task Ratings
 
-After completing the interpretation task for each poem, participants rate their experience and (in AI conditions) their use of and satisfaction with the AI.
+After completing the interpretation tasks for each poem, participants rate their experience and (in AI conditions) their use of and satisfaction with the AI.
 
 **Raw JSON example:**
 ```json
-"page7_3": {
+"page6_3": {
   "info": [
     { "title": "After close reading, how difficult was this poem for you?",
       "answer": "Neither easy nor difficult" },
@@ -558,22 +505,22 @@ After completing the interpretation task for each poem, participants rate their 
 | `[poem_name]_close_reading_self_efficacy_rationale` | Open-ended rationale for self-efficacy rating | — | String |
 | `[poem_name]_close_reading_ai_use` | Whether the participant used the AI for this poem (AI conditions only) | — | String |
 | `[poem_name]_close_reading_ai_helpfulness` | Perceived helpfulness of the AI for this poem (AI conditions only) | — | String |
-| `page7_X_submission_time` | Timestamp (Unix ms) when the page was submitted | — | Integer |
+| `page6_X_submission_time` | Timestamp (Unix ms) when the page was submitted | — | Integer |
 
 ---
 
-### Page 9: Debrief and Study Feedback
+### Page 7: Debrief and Study Feedback
 
-Collects post-study reflection on AI use and any prior familiarity with the poems. This page appears after all three poem loops.
+Collects any prior familiarity with the poems and post-study reflection on task approaches. This page appears after all three poem loops.
 
 **Raw JSON example:**
 ```json
-"pageNew8": {
+"page7": {
   "info": [
     { "title": "Before participating in this study, had you read any of these poems? Please select all that apply.",
       "answer": ["Love Poem", "Dusting"] },
     { "title": "Did you use the AI's answer to help you interpret any of the three poems?...",
-      "answer": "I used it to check my first impression..." },
+      "answer": "I used the AI's answer to check my first impression..." },
     { "title": "Was any part of the study confusing or challenging for you? Did you have any technical issues during the study?",
       "answer": "No issues." }
   ],
@@ -588,7 +535,7 @@ Collects post-study reflection on AI use and any prior familiarity with the poem
 | `poem_read_prior_participation` | Which poems, if any, the participant had read before the study | String |
 | `ai_reflection` | Post-study reflection on AI use across all three poems | String |
 | `study_feedback` | Free-text feedback on confusion, difficulty, or technical issues | String |
-| `page9_submission_time` | Timestamp (Unix ms) when the debrief page was submitted (from `pageNew8.time`) | Integer |
+| `page7_submission_time` | Timestamp (Unix ms) when the debrief page was submitted (from `page7.time`) | Integer |
 
 ---
 
@@ -608,7 +555,3 @@ Collects post-study reflection on AI use and any prior familiarity with the poem
   doi       = {10.1145/3772318.3791727}
 }
 ```
-
-## Contact
-
-Jiayin Zhi — jzhi@uchicago.edu
