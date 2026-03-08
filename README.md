@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains the data processing pipeline for the experiment in the paper *["What Does AI Do for Cultural Interpretation? A Randomized Experiment on Close Reading Poems with Exposure to AI Interpretation"](https://doi.org/10.1145/3772318.3791727)*. It is intended for the use of the [study interface](https://github.com/[repo]) and want to understand what data the interface collects and how to process it into a structured dataset.
+This repository contains the data processing pipeline for the experiment in the paper *["What Does AI Do for Cultural Interpretation? A Randomized Experiment on Close Reading Poems with Exposure to AI Interpretation"](https://doi.org/10.1145/3772318.3791727)*. It is intended for the use of the [study interface](https://github.com/[repo]) for understanding what data the interface collects and how to process it into a structured dataset.
 
 ### Repository Structure
 
