@@ -519,9 +519,9 @@ Collects any prior familiarity with the poems and post-study reflection on task 
   "info": [
     { "title": "Before participating in this study, had you read any of these poems? Please select all that apply.",
       "answer": ["Love Poem", "Dusting"] },
-    { "title": "Did you use the AI's answer to help you interpret any of the three poems?...",
+    { "title": "In the study, you read and interpreted three poems: Love Poem, Dusting, Theme for English B. When interpreting each poem, what's your approach?",
       "answer": "I used the AI's answer to check my first impression..." },
-    { "title": "Was any part of the study confusing or challenging for you? Did you have any technical issues during the study?",
+    { "title": "How did you feel about your experience engaging in close reading during this study? Did anything feel confusing, challenging, or particularly interesting? Did you take away anything new or surprising about the skill of close reading — whether about how it works, how you approach it, or how it might apply to your everyday life?",
       "answer": "No issues." }
   ],
   "time": 1752616998096
@@ -533,8 +533,8 @@ Collects any prior familiarity with the poems and post-study reflection on task 
 | Column Name | Description | Type |
 |---|---|---|
 | `poem_read_prior_participation` | Which poems, if any, the participant had read before the study | String |
-| `ai_reflection` | Post-study reflection on AI use across all three poems | String |
-| `study_feedback` | Free-text feedback on confusion, difficulty, or technical issues | String |
+| `task_approach` | Post-study reflection on task approaches | String |
+| `study_feedback` | Feedback on engaging in close reading | String |
 | `page7_submission_time` | Timestamp (Unix ms) when the debrief page was submitted (from `page7.time`) | Integer |
 
 ---
