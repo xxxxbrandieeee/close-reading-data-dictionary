@@ -1,4 +1,4 @@
-# Data Dictionary: Close Reading Study
+# [AI and Close Reading] Data Dictionary
 
 ## Overview
 
