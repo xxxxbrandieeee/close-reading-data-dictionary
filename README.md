@@ -9,29 +9,8 @@ This repository contains the data processing pipeline for the experiment in the 
 ```
 ├── README.md                        ← This file (data dictionary)
 └── processing/
-    └── data_processing.ipynb       
+    └── data_processing.ipynb        ← Notebook: raw JSON logs → xlsx
 ```
-
-To run the processing notebook, set up your working directory as follows:
-
-```
-your-working-directory/
-│
-├── data/
-│   ├── project2-type1/              ← raw JSON files for AI-Single condition
-│   │   └── ...
-│   ├── project2-type2/              ← raw JSON files for Control condition
-│   │   └── ...
-│   └── project2-type3/              ← raw JSON files for AI-Multiple condition
-│       └── ...
-│
-├── Approved_IDs.csv                 ← participant approval status exported from the crowdsourcing platform
-│
-└── processing/
-    └── data_processing.ipynb        
-```
-
-The subfolder names under `data/` correspond to the study variant identifiers configured in the interface (`projectConfig.ts`). The condition label for each participant is assigned based on the folder name via the `VARIANT_TO_CONDITION` mapping at the top of the notebook. Update `DATA_ROOT`, `APPROVAL_CSV_PATH`, and the output paths in the configuration block before running.
 
 ### Note
 
