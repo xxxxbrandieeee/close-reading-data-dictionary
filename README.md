@@ -574,4 +574,4 @@ Collects any prior familiarity with the poems and post-study reflection on task 
 
 ## Contact
 
-Jiayin Zhi — jzhi@uchicago.edu
+Jiayin Zhi (jzhi@uchicago.edu)
