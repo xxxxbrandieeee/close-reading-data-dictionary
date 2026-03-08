@@ -2,15 +2,38 @@
 
 ## Overview
 
-This repository contains the data processing pipeline for the experiment in the paper *["What Does AI Do for Cultural Interpretation? A Randomized Experiment on Close Reading Poems with Exposure to AI Interpretation"](https://doi.org/10.1145/3772318.3791727)*. It is intended for the use of the [study interface](https://github.com/[repo]) for understanding what data the interface collects and how to process it into a structured dataset.
+This repository contains the data processing pipeline for the experiment in the paper *["What Does AI Do for Cultural Interpretation? A Randomized Experiment on Close Reading Poems with Exposure to AI Interpretation"](https://doi.org/10.1145/3772318.3791727)*. It is intended for users of the [study interface](https://github.com/[repo]) who want to understand what data the interface collects and how to process it into a structured dataset.
 
 ### Repository Structure
 
 ```
-├── README.md                     
+├── README.md                        ← This file (data dictionary)
 └── processing/
-    └── data_processing.ipynb  
+    └── data_processing.ipynb        ← Notebook: raw JSON logs → CSV
 ```
+
+To run the processing notebook, set up your working directory as follows:
+
+```
+your-working-directory/
+│
+├── data/
+│   ├── project2-type1/              ← raw JSON files for AI-Single condition
+│   │   ├── <timestamp>.json
+│   │   ├── <timestamp>.json
+│   │   └── ...
+│   ├── project2-type2/              ← raw JSON files for Control condition
+│   │   └── ...
+│   └── project2-type3/              ← raw JSON files for AI-Multiple condition
+│       └── ...
+│
+├── Approved_IDs.csv                 ← participant approval status exported from Prolific
+│
+└── processing/
+    └── data_processing.ipynb        ← this notebook
+```
+
+The subfolder names under `data/` correspond to the study variant identifiers configured in the interface (`projectConfig.ts`). The condition label for each participant is assigned based on the folder name via the `VARIANT_TO_CONDITION` mapping at the top of the notebook. Update `DATA_ROOT`, `APPROVAL_CSV_PATH`, and the output paths in the configuration block before running.
 
 ### Note
 
@@ -26,7 +49,7 @@ The study interface produces one JSON object per participant. Each object has to
 - `_2` → `dusting`
 - `_3` → `english_b`
 
-Pages 4–7 repeat for each poem (in randomized order), while all other pages appear once.
+Pages 4–6 repeat for each poem (in randomized order), while all other pages appear once.
 
 ```
 {
@@ -39,7 +62,7 @@ Pages 4–7 repeat for each poem (in randomized order), while all other pages ap
   "page6_1":  { ... },   // Post-task ratings: love_poem
   "page4_2":  { ... },   // First reading: dusting
   ...                    // (same structure for _2 and _3)
-  "page7": { ... },   // Debrief and study feedback
+  "page7":    { ... },   // Debrief and study feedback
   "isRefresh": true      // (optional) Browser refresh detected
 }
 ```
@@ -54,7 +77,7 @@ The processing notebook (`processing/data_processing.ipynb`) parses these JSON o
 
 #### Browser Refresh Detection
 
-A top-level field `isRefresh` indicates whether the participant refreshed the browser during the study, which would restart the session. It is used as a data quality check — participants whose logs include this field would be excluded from analysis.
+A top-level field `isRefresh` indicates whether the participant refreshed the browser during the study, which would restart the session. It is used as a data quality check — participants whose logs include this field were excluded from analysis.
 
 | Column Name | Description | Type |
 |---|---|---|
@@ -166,7 +189,7 @@ Confirms that participants acknowledged the study instructions.
 
 ### Page 8: Demographics
 
-Collects demographic information and baseline measures of close reading and LLM experience. 
+Collects demographic information and baseline measures of close reading and LLM experience.
 
 **Raw JSON example:**
 ```json
@@ -206,7 +229,6 @@ Collects demographic information and baseline measures of close reading and LLM 
 | `humanities_course_experience` | Have you ever taken any college-level humanities courses (e.g., literature, philosophy, history)? | String |
 | `poetry_course_experience` | How much coursework have you completed that is related to poetry? | String |
 | `page8_submission_time` | Timestamp (Unix ms) when Page 8 was submitted | Integer |
-
 
 #### Author–Participant Identity Match Variables
 
@@ -481,7 +503,7 @@ After completing the interpretation tasks for each poem, participants rate their
       "answer": "It was understandable and I thought I got its meaning." },
     { "title": "Did you use the AI for interpreting this poem?",
       "answer": "Yes" },
-    { "title": "How helpful was the AI for you when interpreting the poem? ",
+    { "title": "How helpful was the AI for you when interpreting the poem?",
       "answer": "Slightly helpful" }
   ],
   "time": 1753801517010
@@ -551,3 +573,7 @@ Collects any prior familiarity with the poems and post-study reflection on task 
   doi       = {10.1145/3772318.3791727}
 }
 ```
+
+## Contact
+
+Jiayin Zhi — jzhi@uchicago.edu
