@@ -7,9 +7,9 @@ This repository contains the data processing pipeline for the experiment in the 
 ### Repository Structure
 
 ```
-├── README.md                        ← This file (data dictionary)
+├── README.md                        
 └── processing/
-    └── data_processing.ipynb        ← Notebook: raw JSON logs → xlsx
+    └── data_processing.ipynb        
 ```
 
 ### Note
